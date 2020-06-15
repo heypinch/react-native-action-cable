@@ -5,8 +5,8 @@ ActionCable =
   WebSocket: window.WebSocket
   logger: window.console
 
-  createConsumer: (url) ->
-    new Consumer(url, @log, @WebSocket)
+  createConsumer: (url, config) ->
+    new Consumer(url, @log, @WebSocket, config)
 
   startDebugging: ->
     @debugging = true

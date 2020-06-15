@@ -3,9 +3,9 @@ Subscriptions = require('./subscriptions').default
 
 
 class Consumer
-  constructor: (url, @log, @WebSocket) ->
+  constructor: (url, @log, @WebSocket, config) ->
     @subscriptions = new Subscriptions(@)
-    @connection = new Connection(@, @log, @WebSocket)
+    @connection = new Connection(@, @log, @WebSocket, config)
 
     Object.defineProperty @, 'url', {
       get: () -> @createWebSocketURL(url),
@@ -15,7 +15,7 @@ class Consumer
   send: (data) =>
     @connection.send(data)
 
-  connect: =>
+  connect: () =>
     @connection.open()
 
   disconnect: =>

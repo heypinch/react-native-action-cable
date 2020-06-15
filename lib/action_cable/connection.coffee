@@ -7,10 +7,11 @@ ConnectionMonitor = require('./connection_monitor').default
 class Connection
   @reopenDelay: 500
 
-  constructor: (@consumer, @log, @WebSocket) ->
+  constructor: (@consumer, @log, @WebSocket, config) ->
     { @subscriptions } = @consumer
     @monitor = new ConnectionMonitor(@, @log)
     @disconnected = true
+    @config = config    
 
   send: (data) =>
     if @isOpen()
@@ -19,14 +20,14 @@ class Connection
     else
       false
 
-  open: =>
+  open: () =>
     if @isActive()
       @log("Attempted to open WebSocket, but existing socket is #{@getState()}")
       false
     else
       @log("Opening WebSocket, current state is #{@getState()}, subprotocols: #{protocols}")
       @uninstallEventHandlers() if @webSocket?
-      @webSocket = new @WebSocket(@consumer.url, protocols)
+      @webSocket = new @WebSocket(@consumer.url, protocols, @config)
       # NOTE: TEMP FIX FOR IOS. SEE https://github.com/facebook/react-native/issues/6137
       @webSocket.protocol = 'actioncable-v1-json'
       @installEventHandlers()
